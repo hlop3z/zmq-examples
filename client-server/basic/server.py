@@ -2,14 +2,10 @@ import asyncio
 import multiprocessing
 import time
 import sys
-import logging
 import os
 
 # ZMQ
 import zmq.asyncio
-
-# Logs
-logging.basicConfig(format="%(levelname)s    -  %(message)s", level=logging.INFO)
 
 
 async def server(port):
@@ -35,24 +31,23 @@ def start_server(port):
     asyncio.run(server(port))
 
 
-def main():
+def main(shutdown_event):
     ports = [5555, 5556, 5557]
     processes = []
 
-    logging.info("Starting Server. . .")
-
+    # Starting Servers. . .
     for port in ports:
         process = multiprocessing.Process(target=start_server, args=(port,))
         process.start()
         processes.append(process)
 
     try:
-        while True:
+        while not shutdown_event.is_set():
             time.sleep(1)
     except KeyboardInterrupt:
-        pass
+        shutdown_event.set()
 
-    logging.info("Stopping Server. . .")
+    # Stopping Servers. . .
     for process in processes:
         process.terminate()
         process.join()
@@ -61,4 +56,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    stop_event = multiprocessing.Event()
+    main(stop_event)
