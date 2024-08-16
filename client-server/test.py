@@ -3,14 +3,19 @@ import sys
 import logging
 import time
 
-from basic.client import main as client
-from basic.server import main as server
+# Basic
+# from basic.client import main as client
+# from basic.server import main as server
+
+# Devices
+from devices.client import main as client
+from devices.server import main as server
 
 # Global variable to control server shutdown
 shutdown_event = threading.Event()
 
 # Logging
-logging.basicConfig(format="%(levelname)s    -  %(message)s", level=logging.INFO)
+logging.basicConfig(format="%(levelname)s    —  %(message)s", level=logging.INFO)
 
 
 def client_wrapper():

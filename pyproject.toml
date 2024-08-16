@@ -13,3 +13,10 @@ license = { text = "MIT" }
 
 [tool.pdm]
 distribution = false
+
+
+[tool.pdm.scripts]
+# Develop
+test = { shell = "cd client-server && python test.py" }
+test-thread = { shell = "cd workers && python threaders.py" }
+test-process = { shell = "cd workers && python processors.py" }
