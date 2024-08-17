@@ -196,7 +196,7 @@ class ZeroMQ:
 
 @dc.dataclass
 class SSH:
-    server: Any
+    host: Any
     keyfile: Any | None = None
     password: Any | None = None
     paramiko: Any | None = None
