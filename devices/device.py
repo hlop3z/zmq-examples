@@ -3,7 +3,7 @@ from collections import namedtuple
 from contextlib import contextmanager
 from functools import partial
 from types import SimpleNamespace
-from typing import Literal, Any, Optional
+from typing import Literal, Any
 import dataclasses as dc
 import logging
 
@@ -86,7 +86,7 @@ class ZeroMQ:
         timeout: int = 5000,
         is_sync: bool = False,
         network_type: str = "queue",
-        ssh: Optional["SSH"] = None,
+        ssh: "SSH" | None = None,
     ) -> "ZeroMQ":
         """
         Initialize a ZeroMQ.
@@ -127,6 +127,7 @@ class ZeroMQ:
         proxy.bind_in(self.url.frontend)
         proxy.bind_out(self.url.backend)
         proxy.start()
+        logging.info("Starting Broker Device...")
 
     def backend(self):
         """
@@ -147,23 +148,19 @@ class ZeroMQ:
         """
         Connection to the ZMQ socket.
         """
-        if self.ssh:
+        if False:
             tunnel_connection(
                 socket,
                 self.url.frontend,  # "tcp://locahost:5555"
-                self.ssh.host,  # "myuser@remote-server-ip"
-                keyfile=self.ssh.keyfile,
-                password=self.ssh.password,
-                paramiko=self.ssh.paramiko,
-                timeout=self.ssh.timeout,
+                self.ssh_host,  # "myuser@remote-server-ip"
+                keyfile=self.ssh_keyfile,
             )
         else:
             socket.connect(self.url.frontend)
         # Timeouts
         if send_timeout:
             socket.setsockopt(
-                zmq.SNDTIMEO,
-                self.timeout if send_timeout is True else send_timeout,
+                zmq.SNDTIMEO, self.timeout if send_timeout is True else send_timeout
             )
         if receive_timeout:
             socket.setsockopt(
@@ -180,7 +177,7 @@ class ZeroMQ:
         """
         # Context & Socket
         context: Any = self.get_context()
-        c_socket: Any = context.socket(self.mesh.frontend)
+        c_socket: Any = context.socket(zmq.REQ)
         # Request
         try:
             self.__connect(c_socket, send_timeout, receive_timeout)

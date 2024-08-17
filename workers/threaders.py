@@ -9,19 +9,32 @@ class BaseWorker(threading.Thread, ABC):
     def __init__(self, **kwargs: Any):
         super().__init__()
         self.options = SimpleNamespace(**kwargs)
-        self._stop_event = threading.Event()
+        self.__stop_event = threading.Event()
 
     @abstractmethod
     def server(self):
         """Perform server actions. This method must be implemented by subclasses."""
         pass
 
+    @abstractmethod
+    def on_event(self, event_type: str):
+        """Run Event"""
+        pass
+
     def run(self):
-        while not self._stop_event.is_set():
+        """Run Worker"""
+        self.on_event("startup")
+        while not self.__stop_event.is_set():
             self.server()
 
     def stop(self):
-        self._stop_event.set()
+        """Stop Worker"""
+        self.__stop_event.set()
+        self.on_event("shutdown")
+
+    @property
+    def stop_event(self):
+        return self.__stop_event
 
 
 # Example subclass
@@ -29,6 +42,14 @@ class Worker(BaseWorker):
     def server(self):
         print("Working...", self.options)
         time.sleep(1)
+
+    def on_event(self, event_type: str):
+        """Run Event"""
+        match event_type:
+            case "startup":
+                print("Starting Server. . .")
+            case "shutdown":
+                print("Stopping Server. . .")
 
 
 # Example usage
