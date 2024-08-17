@@ -139,6 +139,11 @@ class BaseServer(ABC):
 class Service(BaseServer):
     """Service"""
 
+    @staticmethod
+    def on_event(event_type: str):
+        """Run Event"""
+        print(event_type)
+
 
 Worker = WorkerTwo
 
