@@ -10,6 +10,7 @@ import time
 # Devices
 from devices.client import main as client
 from devices.server import main as server
+# from devices.device import main as device
 
 # Global variable to control server shutdown
 shutdown_event = threading.Event()
@@ -32,8 +33,9 @@ def start_services():
     Starts client and server threads.
     """
     services = [
-        threading.Thread(target=client_wrapper),
+        # threading.Thread(target=device, args=(shutdown_event,)),
         threading.Thread(target=server, args=(shutdown_event,)),
+        threading.Thread(target=client_wrapper),
     ]
 
     for thread in services:

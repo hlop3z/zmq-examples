@@ -6,24 +6,26 @@ import os
 
 
 # Package
-from .device import ZeroMQ
+from .manager import ZeroMQ
 
 
-async def server(port):
+async def server(uid):
     # Client Node
-    node = ZeroMQ(backend=ZeroMQ.tcp(port))
+    # backend=ZeroMQ.tcp(port)
+    node = ZeroMQ()
 
     # Connect
-    node.backend()
+    # node.device()
+    node.backend(True)
 
     # Server
-    print(f"Server running on port {port}")
+    print(f"Server running ID: {uid}")
 
     while True:
         message = await node.socket.recv()
-        print(f"Received request on port {port}: {message.decode('utf-8')}")
-        reply = b"World"
-        await node.socket.send(reply)
+        print(f"Server ID {uid} Received: {message.decode('utf-8')}")
+        reply = f"World from {uid}"
+        await node.socket.send(reply.encode("utf-8"))
 
 
 def start_server(port):
@@ -36,12 +38,12 @@ def start_server(port):
 
 
 def main(shutdown_event):
-    ports = [5555]
+    total_count = 4
     processes = []
 
     # Starting Servers. . .
-    for port in ports:
-        process = multiprocessing.Process(target=start_server, args=(port,))
+    for uid in range(total_count):
+        process = multiprocessing.Process(target=start_server, args=(uid,))
         process.start()
         processes.append(process)
 

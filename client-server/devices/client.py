@@ -1,8 +1,9 @@
+import time
 import os
 import asyncio
 
 # Package
-from .device import ZeroMQ
+from .manager import ZeroMQ
 
 
 async def client(port: int):
@@ -37,6 +38,7 @@ def main():
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
     # Run Client
+    time.sleep(1)
     asyncio.run(start_clients())
 
 
