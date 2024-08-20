@@ -1,4 +1,3 @@
-import signal
 import time
 import zmq
 
