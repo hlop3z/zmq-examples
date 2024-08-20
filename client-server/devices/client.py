@@ -3,7 +3,7 @@ import os
 import asyncio
 
 # Package
-from .manager import ZeroMQ
+from manager import ZeroMQ
 
 
 async def client(port: int):

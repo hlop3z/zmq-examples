@@ -18,6 +18,8 @@ distribution = false
 [tool.pdm.scripts]
 # Develop
 test = { shell = "cd client-server && python test.py" }
+test-pubsub = { shell = "cd pub-sub && python test.py" }
+test-certs = { shell = "cd client-server/authentication && python generate_certificates.py" }
 test-thread = { shell = "cd workers && python threaders.py" }
 test-process = { shell = "cd workers && python processors.py" }
 test-base = { shell = "cd workers && python base.py" }

@@ -5,17 +5,8 @@ import time
 import signal
 
 # Basic
-# from basic.client import main as client
-# from basic.server import main as server
-
-# Devices
-# from devices.client import main as client
-# from devices.server import main as server
-# from devices.device import main as device
-
-# Devices
-from authentication.client import main as client
-from authentication.server import main as server
+from basic.sub import main as subscriber
+from basic.pub import main as publisher
 
 # Global variable to control server shutdown
 shutdown_event = threading.Event()
@@ -24,12 +15,12 @@ shutdown_event = threading.Event()
 logging.basicConfig(format="%(levelname)s    —  %(message)s", level=logging.INFO)
 
 
-def client_wrapper():
+def pub_wrapper():
     """
     Wrapper for the client function to check for shutdown events.
     """
     while not shutdown_event.is_set():
-        client()
+        publisher()
         time.sleep(1)  # Adjust sleep if needed
 
 
@@ -39,8 +30,8 @@ def start_services():
     """
     services = [
         # threading.Thread(target=device, args=(shutdown_event,)),
-        threading.Thread(target=server, args=(shutdown_event,)),
-        threading.Thread(target=client_wrapper),
+        threading.Thread(target=subscriber, args=(shutdown_event,)),
+        threading.Thread(target=pub_wrapper),
     ]
 
     for thread in services:
