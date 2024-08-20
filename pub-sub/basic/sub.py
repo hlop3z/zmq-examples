@@ -1,8 +1,4 @@
-import signal
 import zmq
-
-
-# signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 
 def main(shutdown_event):
@@ -12,6 +8,6 @@ def main(shutdown_event):
     socket.connect("tcp://localhost:5555")
     socket.setsockopt(zmq.SUBSCRIBE, b"status")
 
-    while True:
+    while not shutdown_event.is_set():
         message = socket.recv_multipart()
         print(f"Received: {message}")
